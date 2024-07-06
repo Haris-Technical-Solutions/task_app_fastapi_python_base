@@ -6,8 +6,8 @@ from sqlalchemy import pool
 from alembic import context
 
 
-from Project.App.v1.Providers.database import Base
-from Project.App.v1.Models.User import User
+from TaskApp.App.v1.Providers.database import Base
+from TaskApp.App.v1.Models.User import User
 
 # # Load the SQLAlchemy models to ensure they are recognized
 

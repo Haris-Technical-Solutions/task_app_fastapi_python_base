@@ -2,7 +2,7 @@ from sqlalchemy import  Column, Integer, String, DateTime, Enum
 import enum
 # from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import validates
-from Project.App.v1.Providers.database import Base, db
+from TaskApp.App.v1.Providers.database import Base, db
 # from pydantic import BaseModel
 # from typing import Optional
 
