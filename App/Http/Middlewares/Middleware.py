@@ -13,12 +13,14 @@ class Middleware:
     def __init__(self):
         self.middlewares = {
             "AuthMiddleware" : [
-                # "Auth.user",
                 "Profile.*",
-                "Users.*"
+                "Users.*",
+                "Projects.*"
+
             ],
             "AdminCheckMiddleware" : [
-                "Users.*"
+                "Users.*",
+                "AdminProjects.*"
             ]
         }
 
@@ -92,14 +94,14 @@ class Middleware:
 
         # raise HTTPException(status_code=401, detail="Invalid token")
         # Log information about the request and response
-        print(f"Request Boot: ----------------------------------------")
-        print(f"Request path: {request.url.path}")
-        print(f"Request method: {request.method}")
-        print(f"Target class: {class_name}")
-        print(f"Target function: {function_name}")
-        print(f"Target function: {endpoint}")  # This will print the target function name
-        print(f"Response status code: {response.status_code}")
-        print(f"Process time: {process_time} seconds")
+        print(f"Middleware Boot: ----------------------------------------")
+        # print(f"Request path: {request.url.path}")
+        # print(f"Request method: {request.method}")
+        # print(f"Target class: {class_name}")
+        # print(f"Target function: {function_name}")
+        # print(f"Target function: {endpoint}")  # This will print the target function name
+        # print(f"Response status code: {response.status_code}")
+        # print(f"Process time: {process_time} seconds")
         
 
         response.headers["X-Process-Time"] = str(process_time)

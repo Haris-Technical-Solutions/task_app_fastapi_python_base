@@ -52,8 +52,8 @@ class Auth(Controller):
                 'user':user
             }
         
-    # async def user(self, token: Token.Token):
-    #     return await AuthServiceProvider().get_current_user(token.token)
+    def user(self, token: str):
+        return AuthServiceProvider().get_current_user(token)
     # def user(self, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):
     #     # return token
     #     return  AuthServiceProvider().get_current_user(token)

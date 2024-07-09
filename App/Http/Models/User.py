@@ -6,6 +6,9 @@ from App.Http.Providers.database import Base, db
 # from TaskApp.App.Http.Providers.database import Base, db
 # from pydantic import BaseModel
 # from typing import Optional
+from sqlalchemy.orm import relationship
+from App.Http.Models.ProjectAssignment import ProjectAssignment
+
 
 class UserRoles(str, enum.Enum):
     user = 'user'
@@ -30,6 +33,7 @@ class User(Base):
     created_at = Column(DateTime, nullable=True)
     updated_at = Column(DateTime, nullable=True)
 
+    project_assignment = relationship("ProjectAssignment", back_populates="user", uselist=False)
     
 
     def __init__(self, user = {}):

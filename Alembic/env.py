@@ -8,6 +8,8 @@ from alembic import context
 
 from App.Http.Providers.database import Base
 from App.Http.Models.User import User
+from App.Http.Models.Project import Project
+from App.Http.Models.ProjectAssignment import ProjectAssignment
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

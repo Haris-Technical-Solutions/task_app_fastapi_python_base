@@ -22,7 +22,7 @@ class Users(Controller):
 
 
     def index(self, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):
-        return User().table().all()
+        return User().table().filter(User.deleted_at.is_(None)).all()
     
     def store(self, user_form: UserStoreForm.UserStoreForm, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):
         if(user_form.password == user_form.c_password):
@@ -66,6 +66,7 @@ class Users(Controller):
                 "second_name": profile.second_name,
                 "email": profile.email,
                 "role": profile.role,
+                'updated_at' : datetime.now()
             }
             if profile.password and profile.c_password:
                 if profile.password == profile.c_password:
@@ -109,16 +110,21 @@ class Users(Controller):
             }
     def delete(self,user_id: int, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):
         user_model = User()
-        user = user_model.table().filter(User.id == user_id).first()
-        if(user):
-            stmt = user_model.table().filter(User.id == user_id).delete()
+        user_data = user_model.table().filter(User.id == user_id).first()
+        # return user
+        if(user_data):
+            payload = {
+                'deleted_at' : datetime.now(),
+            }
+            stmt = user_model.table().filter(User.id == user_id).update(payload)
             user_model.db.commit()
+            
             if stmt:
                 return {
                     'msg':{
                         'success':'User deleted Successfully!',
                     },
-                    'user': user
+                    'user': user_model.table().filter(User.id == user_id).first()
                 }
 
         else:

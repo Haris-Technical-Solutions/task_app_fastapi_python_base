@@ -1,12 +1,17 @@
+from App.Http.Middlewares.Middleware import Middleware
 from fastapi import FastAPI, Depends, Request
+# from typing import Callable
+# import time
+
+
 from App.Http.Controllers.Home import Home
 from App.Http.Controllers.Auth import Auth
 from App.Http.Controllers.Profile import Profile
 from App.Http.Controllers.Users import Users
-# from App.Http.Controllers.Auth import Auth
-from typing import Callable
-from App.Http.Middlewares.Middleware import Middleware
-import time
+from TaskApp.App.Http.Controllers.AdminProjects import AdminProjects
+from TaskApp.App.Http.Controllers.Projects import Projects
+
+
 
 
 
@@ -22,8 +27,6 @@ class api:
 
     def setup_middleware(self):
         self.app.middleware("http")(Middleware().boot)
-        # return self.app
-        # await self.app.add_middleware(Middleware().boot)
 
     def setup_routes(self):
         self.app.get(f"{API_VERSION}/")(Home().index)
@@ -39,8 +42,18 @@ class api:
         # Users-----------------------------------------------------------------------------------------
         self.app.get(f"{API_VERSION}/admin/user")(Users().index)
         self.app.post(f"{API_VERSION}/admin/user")(Users().store)
-        self.app.put(f"{API_VERSION}/admin/user")(Users().update)
+        self.app.put(f"{API_VERSION}/admin/user/{{user_id}}")(Users().update)
         self.app.delete(f"{API_VERSION}/admin/user")(Users().delete)
+        # AdminProjects-----------------------------------------------------------------------------------------
+        self.app.get(f"{API_VERSION}/admin/project")(AdminProjects().index)
+        self.app.post(f"{API_VERSION}/admin/project")(AdminProjects().store)
+        self.app.put(f"{API_VERSION}/admin/project/{{project_id}}")(AdminProjects().update)
+        self.app.delete(f"{API_VERSION}/admin/project")(AdminProjects().delete)
+
+        self.app.post(f"{API_VERSION}/admin/project/{{project_id}}/assign")(AdminProjects().assign)
+        # Projects-----------------------------------------------------------------------------------------
+        self.app.get(f"{API_VERSION}/project")(Projects().index)
+
 
         # self.app.get(f"{API_VERSION}/users/me/", response_model=User)(Auth().login_for_access_token)
         # self.app.get(f"{API_VERSION}/users/me/items/")(Auth().read_own_items)
