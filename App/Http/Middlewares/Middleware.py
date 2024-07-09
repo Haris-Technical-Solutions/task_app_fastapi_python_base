@@ -5,18 +5,20 @@ from fastapi.responses import JSONResponse
 import time
 import numpy as np
 from App.Http.Middlewares.AuthMiddleware import AuthMiddleware
-from App.Http.Middlewares.RoleMiddleware import RoleMiddleware
+from TaskApp.App.Http.Middlewares.AdminCheckMiddleware import AdminCheckMiddleware
 
 
 
 class Middleware:
     def __init__(self):
         self.middlewares = {
-            "AuthMiddleware":[
-                "Auth.user",
+            "AuthMiddleware" : [
+                # "Auth.user",
+                "Profile.*",
+                "Users.*"
             ],
-            "RoleMiddleware":[
-                "Auth.user",
+            "AdminCheckMiddleware" : [
+                "Users.*"
             ]
         }
 

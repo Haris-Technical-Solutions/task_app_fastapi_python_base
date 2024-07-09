@@ -1,6 +1,6 @@
 
-from fastapi import Depends, HTTPException, status, FastAPI
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import Depends, HTTPException, status, Security
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Annotated
@@ -12,12 +12,14 @@ from jwt.exceptions import InvalidTokenError
 from App.Http.Providers.database import db
 from App.Http.Models.User import User
 
+from fastapi.security.api_key import APIKeyHeader
 
 from App.Http.RequestForms.Auth import LoginForm , RegisterForm
 
 
 SECRET_KEY = "f6790033fe3181b9e6388b963a0802041629b09179ff380a6c792f4d6713a7c1"
 ALGORITHM = "HS256"
+token_key = APIKeyHeader(name="Authorization")
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -25,6 +27,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 class AuthServiceProvider:
     def __init__(self):
         self.db = db()
+
     class Token(BaseModel):
         access_token: str
         token_type: str
@@ -130,3 +133,7 @@ class AuthServiceProvider:
 
     async def read_own_items(self, current_user: Annotated[RegisterForm.RegisterForm, Depends(get_current_active_user)]):
         return [{"item_id": "Foo", "owner": current_user.email}]
+    
+
+    def get_current_token(auth_key: str = Security(token_key)):
+        return auth_key.replace("Bearer ", "")

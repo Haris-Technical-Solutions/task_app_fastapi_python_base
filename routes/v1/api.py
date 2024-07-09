@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, Request
 from App.Http.Controllers.Home import Home
 from App.Http.Controllers.Auth import Auth
 from App.Http.Controllers.Profile import Profile
+from App.Http.Controllers.Users import Users
 # from App.Http.Controllers.Auth import Auth
 from typing import Callable
 from App.Http.Middlewares.Middleware import Middleware
@@ -31,9 +32,15 @@ class api:
         # Auth-----------------------------------------------------------------------------------------
         self.app.post(f"{API_VERSION}/login")(Auth().login)
         self.app.post(f"{API_VERSION}/register")(Auth().register)
-        self.app.post(f"{API_VERSION}/auth/user")(Auth().user)
+        # self.app.post(f"{API_VERSION}/auth/user")(Auth().user)
         # Profile-----------------------------------------------------------------------------------------
-        self.app.post(f"{API_VERSION}/profile")(Profile().profile)
+        self.app.get(f"{API_VERSION}/profile")(Profile().index)
+        self.app.post(f"{API_VERSION}/profile/update")(Profile().update)
+        # Users-----------------------------------------------------------------------------------------
+        self.app.get(f"{API_VERSION}/admin/user")(Users().index)
+        self.app.post(f"{API_VERSION}/admin/user")(Users().store)
+        self.app.put(f"{API_VERSION}/admin/user")(Users().update)
+        self.app.delete(f"{API_VERSION}/admin/user")(Users().delete)
 
         # self.app.get(f"{API_VERSION}/users/me/", response_model=User)(Auth().login_for_access_token)
         # self.app.get(f"{API_VERSION}/users/me/items/")(Auth().read_own_items)

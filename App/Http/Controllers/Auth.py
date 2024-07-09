@@ -9,11 +9,6 @@ from datetime import datetime
 
 from App.Http.RequestForms.Auth import LoginForm, RegisterForm, Token
 
-from fastapi.security.api_key import APIKeyHeader
-
-token_key = APIKeyHeader(name="Authorization")
-def get_current_token(auth_key: str = Security(token_key)):
-    return auth_key.replace("Bearer ", "")
 
 class Auth(Controller):
 
@@ -59,8 +54,8 @@ class Auth(Controller):
         
     # async def user(self, token: Token.Token):
     #     return await AuthServiceProvider().get_current_user(token.token)
-    def user(self, token: Token.Token = Depends(get_current_token)):
-        # return token
-        return  AuthServiceProvider().get_current_user(token)
+    # def user(self, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):
+    #     # return token
+    #     return  AuthServiceProvider().get_current_user(token)
 
         

@@ -13,10 +13,11 @@ class AuthMiddleware():
     def boot(self, request: Request, call_next, response):
         token = request.headers.get("Authorization", "").replace("Bearer ", "")
 
-        print(token)
+        # print(token)
         if not token:
             raise HTTPException(status_code=401, detail="Token Missing")
             
         if token:
             user = AuthServiceProvider().get_current_user(token)
             response.headers["X-User-id"] = str(user.id)
+            response.headers["X-User-Role"] = str(user.role)

@@ -7,9 +7,9 @@ from App.Http.Providers.database import Base, db
 # from pydantic import BaseModel
 # from typing import Optional
 
-class UserRoles(enum.Enum):
-    admin = 'admin'
+class UserRoles(str, enum.Enum):
     user = 'user'
+    admin = 'admin'
 
 class UserStatus(enum.Enum):
     active = 'active'
@@ -34,6 +34,7 @@ class User(Base):
 
     def __init__(self, user = {}):
         self.db = db()
+        # self.table = self.db.query(User)
 
         self.name = user.get('name', '')
         self.second_name = user.get('second_name' , '')
@@ -44,6 +45,9 @@ class User(Base):
         self.deleted_at = user.get('deleted_at','')
         self.created_at = user.get('created_at','')
         self.updated_at = user.get('updated_at','')
+        
+    # def __call__(self):
+    #     return self.db.query(User)
 
     # def __init__(self, user:class):
     #     self.db = db()

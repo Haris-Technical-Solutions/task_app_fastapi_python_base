@@ -1,13 +1,17 @@
 from App.Http.Controllers.Controller import Controller
-from App.Http.Models.User import User
 from fastapi import Depends, Form, Security
 from App.Http.RequestForms.Auth import Token
 from App.Http.RequestForms.User import ProfileForm
 from App.Http.Providers.AuthServiceProvider import AuthServiceProvider
 
+from App.Http.Models.User import User
+from datetime import datetime
+
 from sqlalchemy import update
 
-class Profile(Controller):
+from TaskApp.App.Http.RequestForms.User import UserUpdateForm, UserStoreForm
+
+class Users(Controller):
     # def __init__(self):
         # self.User = User
 
@@ -18,60 +22,112 @@ class Profile(Controller):
 
 
     def index(self, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):
-        return  AuthServiceProvider().get_current_user(token)
+        return User().table().all()
     
-    def update(self, profile: ProfileForm.ProfileForm, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):
+    def store(self, user_form: UserStoreForm.UserStoreForm, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):
+        if(user_form.password == user_form.c_password):
+            password_hash = AuthServiceProvider().get_password_hash(user_form.password)
+
+            payload = {
+                'name' : user_form.name,
+                'second_name' : user_form.second_name,
+                'email' : user_form.email,
+                'password' : password_hash,
+                'status' : 'active',
+                'role' : user_form.role,
+                'deleted_at' : None,
+                'created_at' : datetime.now(),
+                'updated_at' : None,
+            }
+
+
+            user = User(payload)
+            self.db.add(user)
+            self.db.commit()
+            self.db.refresh(user)
+
+            return {
+                'msg':{
+                    'success':'user created Successfully!',
+                },
+                'user':user
+            }
+        
+    def update(self,user_id: int , profile: UserUpdateForm.UserUpdateForm, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):
         # return profile
-        user = AuthServiceProvider().get_current_user(token)
+        # user = AuthServiceProvider().get_current_user(token)
         # user = []
+        user = User().table().filter(User.id == user_id).first()
+        # return user
+    
         if user:
             payload = {
                 "name": profile.name,
                 "second_name": profile.second_name,
                 "email": profile.email,
+                "role": profile.role,
             }
-            if profile.password and profile.c_password and profile.old_password:
-                if AuthServiceProvider().verify_password(profile.old_password, user.password):
-                    if profile.password == profile.c_password:
-                        password_hash = AuthServiceProvider().get_password_hash(profile.password)
-                        payload['password'] = password_hash
-                    else:
-                        return {
-                            'msg':{
-                                'error':'Password Mismatch!',
-                            }
-                        }
+            if profile.password and profile.c_password:
+                if profile.password == profile.c_password:
+                    password_hash = AuthServiceProvider().get_password_hash(profile.password)
+                    payload['password'] = password_hash
                 else:
                     return {
                         'msg':{
-                            'error':'Incorrect old Password!',
+                            'error':'Password Mismatch!',
                         }
                     }
-            
+            # return user, payload, user_id
             # ----------------------------------------------------------------
             um = User()
             stmt = (
                 um.table()
-                .filter(User.id == user.id)
+                .filter(User.id == user_id)
                 .update(payload)
             )
             um.db.commit()
 
             if stmt:
                 return {
-                'msg':{
-                    'success':'Profile updated Successfully!',
-                },
-                'user': (
-                    User().table()
-                    .filter(User.id == user.id)
-                    .first()
-                )
-            }
+                    'msg':{
+                        'success':'User updated Successfully!',
+                    },
+                    'user': (
+                        User().table()
+                        .filter(User.id == user_id)
+                        .first()
+                    )
+                }
 
             return payload, stmt
-            
-        # return  AuthServiceProvider().get_current_user(token)
+        else:
+            return {
+                'msg':{
+                    'error':'No User Found with this id!',
+                },
+                'user_id': user_id
+            }
+    def delete(self,user_id: int, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):
+        user_model = User()
+        user = user_model.table().filter(User.id == user_id).first()
+        if(user):
+            stmt = user_model.table().filter(User.id == user_id).delete()
+            user_model.db.commit()
+            if stmt:
+                return {
+                    'msg':{
+                        'success':'User deleted Successfully!',
+                    },
+                    'user': user
+                }
+
+        else:
+            return {
+                'msg':{
+                    'error':'No User Found with this id!',
+                },
+                'user_id': user_id
+            }
     
     # def store(self):
     #     user = User(
