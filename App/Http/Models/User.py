@@ -8,6 +8,7 @@ from App.Http.Providers.database import Base, db
 # from typing import Optional
 from sqlalchemy.orm import relationship
 from App.Http.Models.ProjectAssignment import ProjectAssignment
+from App.Http.Models.Task import Task
 
 
 class UserRoles(str, enum.Enum):
@@ -33,7 +34,9 @@ class User(Base):
     created_at = Column(DateTime, nullable=True)
     updated_at = Column(DateTime, nullable=True)
 
-    project_assignment = relationship("ProjectAssignment", back_populates="user", uselist=False)
+    # back relation
+    project_assignments = relationship("ProjectAssignment", back_populates="user", uselist=False)
+    tasks = relationship("Task", back_populates="assignee", uselist=False)
     
 
     def __init__(self, user = {}):

@@ -11,7 +11,7 @@ from datetime import datetime
 
 from sqlalchemy import update
 
-from TaskApp.App.Http.RequestForms.Projects import UpdateForm, StoreForm, AssignUsersForm
+from App.Http.RequestForms.Projects import UpdateForm, StoreForm, AssignUsersForm
 
 class AdminProjects(Controller):
 

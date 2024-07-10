@@ -55,7 +55,7 @@ class Auth(Controller):
     def user(self, token: str):
         return AuthServiceProvider().get_current_user(token)
     # def user(self, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):
-    #     # return token
+    #     # return tokenz
     #     return  AuthServiceProvider().get_current_user(token)
 
         

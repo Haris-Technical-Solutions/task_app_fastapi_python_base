@@ -9,7 +9,7 @@ from datetime import datetime
 
 from sqlalchemy import update
 
-from TaskApp.App.Http.RequestForms.User import UserUpdateForm, UserStoreForm
+from App.Http.RequestForms.User import UserUpdateForm, UserStoreForm
 
 class Users(Controller):
     # def __init__(self):
@@ -51,6 +51,12 @@ class Users(Controller):
                     'success':'user created Successfully!',
                 },
                 'user':user
+            }
+        else:
+            return {
+                'msg': {
+                    'error': 'password mismatch!'
+                }
             }
         
     def update(self,user_id: int , profile: UserUpdateForm.UserUpdateForm, token: Token.Token = Depends(AuthServiceProvider.get_current_token)):

@@ -10,14 +10,11 @@ from App.Http.Controllers.Profile import Profile
 from App.Http.Controllers.Users import Users
 from TaskApp.App.Http.Controllers.AdminProjects import AdminProjects
 from TaskApp.App.Http.Controllers.Projects import Projects
-
-
-
+from TaskApp.App.Http.Controllers.Tasks import Tasks
+from TaskApp.App.Http.Controllers.TaskComments import TaskComments
 
 
 API_VERSION = '/v1'
-
-
 
 class api:
     def __init__(self, app: FastAPI):
@@ -32,19 +29,19 @@ class api:
         self.app.get(f"{API_VERSION}/")(Home().index)
         # self.app.get(f"{API_VERSION}/store")(Home().store)
 
-        # Auth-----------------------------------------------------------------------------------------
+        # Auth-------------------------------------------------------------------------------------------
         self.app.post(f"{API_VERSION}/login")(Auth().login)
         self.app.post(f"{API_VERSION}/register")(Auth().register)
         # self.app.post(f"{API_VERSION}/auth/user")(Auth().user)
         # Profile-----------------------------------------------------------------------------------------
         self.app.get(f"{API_VERSION}/profile")(Profile().index)
         self.app.post(f"{API_VERSION}/profile/update")(Profile().update)
-        # Users-----------------------------------------------------------------------------------------
+        # Users-------------------------------------------------------------------------------------------
         self.app.get(f"{API_VERSION}/admin/user")(Users().index)
         self.app.post(f"{API_VERSION}/admin/user")(Users().store)
         self.app.put(f"{API_VERSION}/admin/user/{{user_id}}")(Users().update)
         self.app.delete(f"{API_VERSION}/admin/user")(Users().delete)
-        # AdminProjects-----------------------------------------------------------------------------------------
+        # AdminProjects-----------------------------------------------------------------------------------
         self.app.get(f"{API_VERSION}/admin/project")(AdminProjects().index)
         self.app.post(f"{API_VERSION}/admin/project")(AdminProjects().store)
         self.app.put(f"{API_VERSION}/admin/project/{{project_id}}")(AdminProjects().update)
@@ -53,6 +50,28 @@ class api:
         self.app.post(f"{API_VERSION}/admin/project/{{project_id}}/assign")(AdminProjects().assign)
         # Projects-----------------------------------------------------------------------------------------
         self.app.get(f"{API_VERSION}/project")(Projects().index)
+        self.app.get(f"{API_VERSION}/project/{{project_id}}")(Projects().show)
+        # Tasks--------------------------------------------------------------------------------------------
+        self.app.get(f"{API_VERSION}/project/{{project_id}}/task")(Tasks().index)
+        self.app.post(f"{API_VERSION}/project/{{project_id}}/task")(Tasks().store)
+        self.app.put(f"{API_VERSION}/project/{{project_id}}/task/{{task_id}}")(Tasks().update)
+        self.app.delete(f"{API_VERSION}/project/{{project_id}}/task")(Tasks().delete)
+
+        # self.app.post(f"{API_VERSION}/admin/project/{{project_id}}/task/{{task_id}}/assign")(AdminProjects().assign)
+        
+        # TaskComments--------------------------------------------------------------------------------------------
+        self.app.get(f"{API_VERSION}/project/{{project_id}}/task/{{task_id}}/comment")(TaskComments().index)
+        self.app.post(f"{API_VERSION}/project/{{project_id}}/task/{{task_id}}/comment")(TaskComments().store)
+        self.app.put(f"{API_VERSION}/project/{{project_id}}/task/{{task_id}}/comment/{{comment_id}}")(TaskComments().update)
+        self.app.delete(f"{API_VERSION}/project/{{project_id}}/task/{{task_id}}/comment/{{comment_id}}")(TaskComments().delete)
+
+
+
+
+
+
+
+
 
 
         # self.app.get(f"{API_VERSION}/users/me/", response_model=User)(Auth().login_for_access_token)

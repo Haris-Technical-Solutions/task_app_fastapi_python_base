@@ -15,7 +15,10 @@ class Middleware:
             "AuthMiddleware" : [
                 "Profile.*",
                 "Users.*",
-                "Projects.*"
+                "Projects.*",
+                "AdminProjects.*",
+                "Tasks.*",
+                "TaskComments.*"
 
             ],
             "AdminCheckMiddleware" : [

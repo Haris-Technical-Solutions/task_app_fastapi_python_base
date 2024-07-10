@@ -30,8 +30,8 @@ class ProjectAssignment(Base):
 
 
     # relationships
-    user = relationship("User", back_populates="project_assignment")
-    project = relationship("Project", back_populates="project_assignment")
+    user = relationship("User", back_populates="project_assignments")
+    project = relationship("Project", back_populates="project_assignments")
 
     def __init__(self, user = {}):
         self.db = db()
